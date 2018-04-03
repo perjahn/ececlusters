@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ececlusters", "ececlusters-console\ececlusters-console.csproj", "{0DE2F743-DE6B-4DBB-94CA-43C765FDE488}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ececlusters-console", "ececlusters-console\ececlusters-console.csproj", "{0DE2F743-DE6B-4DBB-94CA-43C765FDE488}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ececlusters", "ececlusters\ececlusters.csproj", "{D6E3018A-C2C8-4818-A84B-31B2C45C6104}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ececlusters-web", "ececlusters-web\ececlusters-web.csproj", "{BEC69D7F-E796-437F-8BE9-362A636E8251}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{0DE2F743-DE6B-4DBB-94CA-43C765FDE488}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DE2F743-DE6B-4DBB-94CA-43C765FDE488}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DE2F743-DE6B-4DBB-94CA-43C765FDE488}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6E3018A-C2C8-4818-A84B-31B2C45C6104}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6E3018A-C2C8-4818-A84B-31B2C45C6104}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6E3018A-C2C8-4818-A84B-31B2C45C6104}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6E3018A-C2C8-4818-A84B-31B2C45C6104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEC69D7F-E796-437F-8BE9-362A636E8251}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEC69D7F-E796-437F-8BE9-362A636E8251}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEC69D7F-E796-437F-8BE9-362A636E8251}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEC69D7F-E796-437F-8BE9-362A636E8251}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
