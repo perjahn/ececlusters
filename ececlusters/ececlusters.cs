@@ -14,6 +14,7 @@ namespace ececlusters
         public string name { get; set; }
         public long documentcount { get; set; }
         public List<Index> realindices { get; set; }
+        public long storesize { get; set; }
     }
 
     public class CompactIndex
@@ -22,6 +23,7 @@ namespace ececlusters
         public string compactname { get; set; }
         public long compactindexcount { get; set; }
         public long documentcount { get; set; }
+        public long storesize { get; set; }
     }
 
     public class Cluster
@@ -102,7 +104,8 @@ namespace ececlusters
                         {
                             name = indexgroup.Key,
                             realindices = indexgroup.ToList(),
-                            documentcount = indexgroup.Sum(i => i.documentcount)
+                            documentcount = indexgroup.Sum(i => i.documentcount),
+                            storesize = indexgroup.Sum(i => i.storesize)
                         });
                 }
             }
@@ -204,15 +207,64 @@ namespace ececlusters
                         docs = 0;
                     }
 
+                    string storesize = index["store.size"];
+
                     cluster.indices.Add(new Index()
                     {
                         name = index.index,
-                        documentcount = docs
+                        documentcount = docs,
+                        storesize = GetBytes(storesize)
                     });
                 }
             }
 
             return cluster;
+        }
+
+        private static long GetBytes(string jsonvalue)
+        {
+            if (jsonvalue == null)
+                return 0;
+
+            long factor;
+            string parsevalue;
+            if (jsonvalue.EndsWith("pb"))
+            {
+                factor = (long)1024 * 1024 * 1024 * 1024 * 1024;
+                parsevalue = jsonvalue.Substring(0, jsonvalue.Length - 2);
+            }
+            else if (jsonvalue.EndsWith("tb"))
+            {
+                factor = (long)1024 * 1024 * 1024 * 1024;
+                parsevalue = jsonvalue.Substring(0, jsonvalue.Length - 2);
+            }
+            else if (jsonvalue.EndsWith("gb"))
+            {
+                factor = 1024 * 1024 * 1024;
+                parsevalue = jsonvalue.Substring(0, jsonvalue.Length - 2);
+            }
+            else if (jsonvalue.EndsWith("mb"))
+            {
+                factor = 1024 * 1024;
+                parsevalue = jsonvalue.Substring(0, jsonvalue.Length - 2);
+            }
+            else if (jsonvalue.EndsWith("kb"))
+            {
+                factor = 1024;
+                parsevalue = jsonvalue.Substring(0, jsonvalue.Length - 2);
+            }
+            else
+            {
+                factor = 1;
+                parsevalue = jsonvalue;
+            }
+
+            if (!double.TryParse(parsevalue, out double size))
+            {
+                size = 0;
+            }
+
+            return (long)(size * factor);
         }
 
         private static void Log(string message)
