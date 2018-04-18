@@ -43,8 +43,9 @@ namespace ececlusters_web
             sb.AppendLine(
                 "<tr><th>Cluster name</th>" +
                 "<th>Elasticsearch url/Index</th>" +
-                "<th>Indices</th>" +
-                "<th>Documents</th>" +
+                "<th class='number'>Indices</th>" +
+                "<th class='number'>Documents</th>" +
+                "<th class='number'>Size</th>" +
                 "<th>Kibana url</th></tr>");
 
             foreach (var cluster in clusters.OrderBy(c => c.name))
@@ -54,8 +55,9 @@ namespace ececlusters_web
                     sb.AppendLine(
                         $"<tr><td>{cluster.name}</td>" +
                         $"<td><a href='{cluster.url}' target='_blank'>{cluster.url}</a></td>" +
-                        $"<td>{cluster.indices.Count}</td>" +
-                        $"<td>{cluster.indices.Sum(i => i.documentcount)}</td>" +
+                        $"<td class='number'>{cluster.indices.Count}</td>" +
+                        $"<td class='number'>{cluster.indices.Sum(i => i.documentcount)}</td>" +
+                        $"<td class='number'>{cluster.indices.Sum(i => i.storesize)}</td>" +
                         $"<td><a href='{cluster.kibanaurl}' target='_blank'>{cluster.kibanaurl}</a></td></tr>");
                 }
                 else
@@ -63,8 +65,9 @@ namespace ececlusters_web
                     sb.AppendLine(
                         $"<tr><td>{cluster.name}</td>" +
                         $"<td><a href='{cluster.url}' target='_blank'>{cluster.url}</a></td>" +
-                        $"<td>{cluster.indices.Count}</td>" +
-                        $"<td>{cluster.indices.Sum(i => i.documentcount)}</td></tr>");
+                        $"<td class='number'>{cluster.indices.Count}</td>" +
+                        $"<td class='number'>{cluster.indices.Sum(i => i.documentcount)}</td>" +
+                        $"<td class='number'>{cluster.indices.Sum(i => i.storesize)}</td></tr>");
                 }
 
                 foreach (var index in cluster.compactindices.OrderBy(i => i.name))
@@ -72,17 +75,19 @@ namespace ececlusters_web
                     sb.AppendLine(
                         $"<tr><td></td>" +
                         $"<td>{index.name}</td>" +
-                        $"<td>{index.realindices.Count}</td>" +
-                        $"<td>{index.documentcount}</td></tr>");
+                        $"<td class='number'>{index.realindices.Count}</td>" +
+                        $"<td class='number'>{index.documentcount}</td>" +
+                        $"<td class='number'>{index.storesize}</td></tr>");
                 }
             }
 
             string content =
-                "<html><body>" +
-                "<style>" +
-                "table { border-collapse: collapse; }" +
-                "td, th { font-family: sans-serif; text-align: left; }" +
-                "</style>" +
+                "<html><body>" + Environment.NewLine +
+                "<style>" + Environment.NewLine +
+                "table { border-collapse: collapse; }" + Environment.NewLine +
+                "td, th { font-family: sans-serif; text-align: left; }" + Environment.NewLine +
+                "td.number, th.number { text-align: right; }" + Environment.NewLine +
+                "</style>" + Environment.NewLine +
                 "<table border='1'>" + Environment.NewLine +
                 sb.ToString() +
                 "</table></html></body>" + Environment.NewLine;
