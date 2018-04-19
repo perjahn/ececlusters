@@ -85,12 +85,17 @@ namespace ececlusters_web
                 "<html><body>" + Environment.NewLine +
                 "<style>" + Environment.NewLine +
                 "table { border-collapse: collapse; }" + Environment.NewLine +
+                "p { font-family: sans-serif; }" + Environment.NewLine +
                 "td, th { font-family: sans-serif; text-align: left; }" + Environment.NewLine +
                 "td.number, th.number { text-align: right; }" + Environment.NewLine +
                 "</style>" + Environment.NewLine +
                 "<table border='1'>" + Environment.NewLine +
                 sb.ToString() +
-                "</table></html></body>" + Environment.NewLine;
+                "</table>" + Environment.NewLine +
+                $"<p>Total indices: {clusters.Sum(c => c.compactindices.Count)}</p>" + Environment.NewLine +
+                $"<p>Total documents: {clusters.Sum(c => c.compactindices.Sum(i => i.documentcount))}</p>" + Environment.NewLine +
+                $"<p>Total storesize: {clusters.Sum(c => c.compactindices.Sum(i => i.storesize))}</p>" + Environment.NewLine +
+                "</html></body>" + Environment.NewLine;
 
             return content;
         }
