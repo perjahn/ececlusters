@@ -86,7 +86,7 @@ namespace ececlusters_web
                 "<style>" + Environment.NewLine +
                 "table { border-collapse: collapse; }" + Environment.NewLine +
                 "p { font-family: sans-serif; }" + Environment.NewLine +
-                "td, th { font-family: sans-serif; text-align: left; }" + Environment.NewLine +
+                "td, th { font-family: sans-serif; text-align: left; white-space: nowrap; }" + Environment.NewLine +
                 "td.number, th.number { text-align: right; }" + Environment.NewLine +
                 "</style>" + Environment.NewLine +
                 "<table border='1'>" + Environment.NewLine +
