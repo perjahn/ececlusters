@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -14,15 +15,6 @@ namespace ececlusters
         public string name { get; set; }
         public long documentcount { get; set; }
         public List<Index> realindices { get; set; }
-        public long storesize { get; set; }
-    }
-
-    public class CompactIndex
-    {
-        public string name { get; set; }
-        public string compactname { get; set; }
-        public long compactindexcount { get; set; }
-        public long documentcount { get; set; }
         public long storesize { get; set; }
     }
 
@@ -259,7 +251,7 @@ namespace ececlusters
                 parsevalue = jsonvalue;
             }
 
-            if (!double.TryParse(parsevalue, out double size))
+            if (!double.TryParse(parsevalue, NumberStyles.Any, CultureInfo.InvariantCulture, out double size))
             {
                 size = 0;
             }
