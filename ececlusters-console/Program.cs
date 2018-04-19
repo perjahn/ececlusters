@@ -38,7 +38,7 @@ namespace ececlusters
                 }
             }
 
-            Log($"Total indices: {clusters.Sum(c => c.compactindices.Count)}");
+            Log($"Total indices: {clusters.Sum(c => c.indices.Count)}");
             Log($"Total documents: {clusters.Sum(c => c.compactindices.Sum(i => i.documentcount))}");
             Log($"Total storesize: {clusters.Sum(c => c.compactindices.Sum(i => i.storesize))}");
         }
