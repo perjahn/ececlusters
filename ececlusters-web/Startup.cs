@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -81,6 +82,9 @@ namespace ececlusters_web
                 }
             }
 
+            long storesize = clusters.Sum(c => c.compactindices.Sum(i => i.storesize));
+            string storesizeshort = GetPrettySize(storesize);
+
             string content =
                 "<html><body>" + Environment.NewLine +
                 "<style>" + Environment.NewLine +
@@ -94,10 +98,38 @@ namespace ececlusters_web
                 "</table>" + Environment.NewLine +
                 $"<p>Total indices: {clusters.Sum(c => c.indices.Count)}</p>" + Environment.NewLine +
                 $"<p>Total documents: {clusters.Sum(c => c.compactindices.Sum(i => i.documentcount))}</p>" + Environment.NewLine +
-                $"<p>Total storesize: {clusters.Sum(c => c.compactindices.Sum(i => i.storesize))}</p>" + Environment.NewLine +
+                $"<p>Total storesize: {storesize}{storesizeshort}</p>" + Environment.NewLine +
                 "</html></body>" + Environment.NewLine;
 
             return content;
+        }
+
+        string GetPrettySize(long size)
+        {
+            long kb = 1024;
+            long mb = 1024 * 1024;
+            long gb = 1024 * 1024 * 1024;
+            long tb = (long)1024 * 1024 * 1024 * 1024;
+            if (size > tb)
+            {
+                return " (" + (size / (double)tb).ToString("#.#", CultureInfo.InvariantCulture) + " tb)";
+            }
+            else if (size > gb)
+            {
+                return " (" + (size / (double)gb).ToString("#.#", CultureInfo.InvariantCulture) + " gb)";
+            }
+            else if (size > mb)
+            {
+                return " (" + (size / (double)mb).ToString("#.#", CultureInfo.InvariantCulture) + " mb)";
+            }
+            else if (size > kb)
+            {
+                return " (" + (size / (double)kb).ToString("#.#", CultureInfo.InvariantCulture) + " kb)";
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
     }
 }
