@@ -94,7 +94,7 @@ namespace ececlusters
                     cluster.compactindices.Add(
                         new Index
                         {
-                            name = indexgroup.Key,
+                            name = indexgroup.Count() == 1 ? indexgroup.Single().name : indexgroup.Key,
                             realindices = indexgroup.ToList(),
                             documentcount = indexgroup.Sum(i => i.documentcount),
                             storesize = indexgroup.Sum(i => i.storesize)
