@@ -30,7 +30,7 @@ namespace ececlusters
 
     public class ClusterInfo
     {
-        public static List<Cluster> GetClusters()
+        public static async Task<Cluster[]> GetClustersAsync()
         {
             string configfile = "appsettings.json";
             if (!File.Exists(configfile))
@@ -52,7 +52,7 @@ namespace ececlusters
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(creds));
 
-                result = client.GetStringAsync(url).Result;
+                result = await client.GetStringAsync(url);
             }
 
             File.WriteAllText("eceresult.json", result);
@@ -66,7 +66,7 @@ namespace ececlusters
 
             var allclustercredentials = (JArray)settings.clustercredentials;
 
-            List<Cluster> clusters = new List<Cluster>();
+            var tasks = new List<Task<Cluster>>();
 
             foreach (dynamic ececluster in ececlusters)
             {
@@ -84,25 +84,10 @@ namespace ececlusters
                     clusterpassword = ((dynamic)clustercredentials[0]).password;
                 }
 
-                clusters.Add(GetCluster(clusterid, kibanaid, domain, clustername, clusterusername, clusterpassword));
+                tasks.Add(GetClusterAsync(clusterid, kibanaid, domain, clustername, clusterusername, clusterpassword));
             }
 
-            foreach (var cluster in clusters)
-            {
-                foreach (var indexgroup in cluster.indices.GroupBy(i => GetShortIndexName(i.name)))
-                {
-                    cluster.compactindices.Add(
-                        new Index
-                        {
-                            name = indexgroup.Count() == 1 ? indexgroup.Single().name : indexgroup.Key,
-                            realindices = indexgroup.ToList(),
-                            documentcount = indexgroup.Sum(i => i.documentcount),
-                            storesize = indexgroup.Sum(i => i.storesize)
-                        });
-                }
-            }
-
-            return clusters;
+            return await Task.WhenAll(tasks);
         }
 
         private static string GetKibanaID(dynamic ececluster)
@@ -154,7 +139,7 @@ namespace ececlusters
             }
         }
 
-        private static Cluster GetCluster(string clusterid, string kibanaid, string domain, string clustername, string username, string password)
+        private static async Task<Cluster> GetClusterAsync(string clusterid, string kibanaid, string domain, string clustername, string username, string password)
         {
             var cluster = new Cluster()
             {
@@ -180,7 +165,7 @@ namespace ececlusters
 
                 try
                 {
-                    result = client.GetStringAsync(url).Result;
+                    result = await client.GetStringAsync(url);
                 }
                 catch (Exception ex)
                 {
@@ -208,6 +193,18 @@ namespace ececlusters
                         storesize = GetBytes(storesize)
                     });
                 }
+            }
+
+            foreach (var indexgroup in cluster.indices.GroupBy(i => GetShortIndexName(i.name)))
+            {
+                cluster.compactindices.Add(
+                    new Index
+                    {
+                        name = indexgroup.Count() == 1 ? indexgroup.Single().name : indexgroup.Key,
+                        realindices = indexgroup.ToList(),
+                        documentcount = indexgroup.Sum(i => i.documentcount),
+                        storesize = indexgroup.Sum(i => i.storesize)
+                    });
             }
 
             return cluster;

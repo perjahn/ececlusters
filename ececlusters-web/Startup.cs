@@ -30,14 +30,14 @@ namespace ececlusters_web
 
             app.Run(async (context) =>
             {
-                string content = GetClusterTable();
+                string content = await GetClusterTableAsync();
                 await context.Response.WriteAsync(content);
             });
         }
 
-        public string GetClusterTable()
+        public async Task<string> GetClusterTableAsync()
         {
-            List<Cluster> clusters = ClusterInfo.GetClusters();
+            Cluster[] clusters = await ClusterInfo.GetClustersAsync();
 
             StringBuilder sb = new StringBuilder();
 

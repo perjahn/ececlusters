@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using ececlusters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,14 +14,14 @@ namespace ececlusters
 {
     class Program
     {
-        static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            PrintClustersAndIndices();
+            await PrintClustersAndIndicesAsync();
         }
 
-        private static void PrintClustersAndIndices()
+        static async Task PrintClustersAndIndicesAsync()
         {
-            List<Cluster> clusters = ClusterInfo.GetClusters();
+            Cluster[] clusters = await ClusterInfo.GetClustersAsync();
 
             foreach (var cluster in clusters.OrderBy(c => c.name))
             {
@@ -81,6 +82,5 @@ namespace ececlusters
 
             Console.WriteLine($"{now}: {message}");
         }
-
     }
 }
