@@ -182,7 +182,7 @@ namespace ececlusters
                 {
                     result = client.GetStringAsync(url).Result;
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
                     cluster.errormessage = ex.Message;
                     return cluster;

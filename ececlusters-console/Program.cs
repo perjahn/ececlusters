@@ -55,19 +55,19 @@ namespace ececlusters
             long tb = (long)1024 * 1024 * 1024 * 1024;
             if (size > tb)
             {
-                return " (" + (size / (double)tb).ToString("#.#", CultureInfo.InvariantCulture) + " tb)";
+                return " (" + (size / (double)tb).ToString("#.0", CultureInfo.InvariantCulture) + " tb)";
             }
             else if (size > gb)
             {
-                return " (" + (size / (double)gb).ToString("#.#", CultureInfo.InvariantCulture) + " gb)";
+                return " (" + (size / (double)gb).ToString("#.0", CultureInfo.InvariantCulture) + " gb)";
             }
             else if (size > mb)
             {
-                return " (" + (size / (double)mb).ToString("#.#", CultureInfo.InvariantCulture) + " mb)";
+                return " (" + (size / (double)mb).ToString("#.0", CultureInfo.InvariantCulture) + " mb)";
             }
             else if (size > kb)
             {
-                return " (" + (size / (double)kb).ToString("#.#", CultureInfo.InvariantCulture) + " kb)";
+                return " (" + (size / (double)kb).ToString("#.0", CultureInfo.InvariantCulture) + " kb)";
             }
             else
             {

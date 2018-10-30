@@ -51,6 +51,8 @@ namespace ececlusters_web
 
             foreach (var cluster in clusters.OrderBy(c => c.name))
             {
+                long clustersize = cluster.indices.Sum(i => i.storesize);
+                string prettysizetooltip = GetPrettyTooltip(clustersize);
                 if (cluster.kibanaurl != null)
                 {
                     sb.AppendLine(
@@ -58,7 +60,7 @@ namespace ececlusters_web
                         $"<td><a href='{cluster.url}' target='_blank'>{cluster.url}</a></td>" +
                         $"<td class='number'>{cluster.indices.Count}</td>" +
                         $"<td class='number'>{cluster.indices.Sum(i => i.documentcount)}</td>" +
-                        $"<td class='number'>{cluster.indices.Sum(i => i.storesize)}</td>" +
+                        $"<td class='number'{prettysizetooltip}>{clustersize}</td>" +
                         $"<td><a href='{cluster.kibanaurl}' target='_blank'>{cluster.kibanaurl}</a></td></tr>");
                 }
                 else
@@ -68,7 +70,7 @@ namespace ececlusters_web
                         $"<td><a href='{cluster.url}' target='_blank'>{cluster.url}</a></td>" +
                         $"<td class='number'>{cluster.indices.Count}</td>" +
                         $"<td class='number'>{cluster.indices.Sum(i => i.documentcount)}</td>" +
-                        $"<td class='number'>{cluster.indices.Sum(i => i.storesize)}</td></tr>");
+                        $"<td class='number'{prettysizetooltip}>{clustersize}</td></tr>");
                 }
 
                 foreach (var index in cluster.compactindices.OrderBy(i => i.name))
@@ -78,12 +80,16 @@ namespace ececlusters_web
                         $"<td>{index.name}</td>" +
                         $"<td class='number'>{index.realindices.Count}</td>" +
                         $"<td class='number'>{index.documentcount}</td>" +
-                        $"<td class='number'>{index.storesize}</td></tr>");
+                        $"<td class='number'{GetPrettyTooltip(index.storesize)}>{index.storesize}</td></tr>");
                 }
             }
 
             long storesize = clusters.Sum(c => c.compactindices.Sum(i => i.storesize));
             string storesizeshort = GetPrettySize(storesize);
+            if (storesizeshort != string.Empty)
+            {
+                storesizeshort = $" ({storesizeshort})";
+            }
 
             string content =
                 "<html><body>" + Environment.NewLine +
@@ -104,6 +110,12 @@ namespace ececlusters_web
             return content;
         }
 
+        string GetPrettyTooltip(long size)
+        {
+            string pretty = GetPrettySize(size);
+            return pretty == string.Empty ? string.Empty : $" title='{pretty}'";
+        }
+
         string GetPrettySize(long size)
         {
             long kb = 1024;
@@ -112,19 +124,19 @@ namespace ececlusters_web
             long tb = (long)1024 * 1024 * 1024 * 1024;
             if (size > tb)
             {
-                return " (" + (size / (double)tb).ToString("#.#", CultureInfo.InvariantCulture) + " tb)";
+                return (size / (double)tb).ToString("#.0", CultureInfo.InvariantCulture) + " tb";
             }
             else if (size > gb)
             {
-                return " (" + (size / (double)gb).ToString("#.#", CultureInfo.InvariantCulture) + " gb)";
+                return (size / (double)gb).ToString("#.0", CultureInfo.InvariantCulture) + " gb";
             }
             else if (size > mb)
             {
-                return " (" + (size / (double)mb).ToString("#.#", CultureInfo.InvariantCulture) + " mb)";
+                return (size / (double)mb).ToString("#.0", CultureInfo.InvariantCulture) + " mb";
             }
             else if (size > kb)
             {
-                return " (" + (size / (double)kb).ToString("#.#", CultureInfo.InvariantCulture) + " kb)";
+                return (size / (double)kb).ToString("#.0", CultureInfo.InvariantCulture) + " kb";
             }
             else
             {
