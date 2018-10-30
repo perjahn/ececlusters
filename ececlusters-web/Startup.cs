@@ -102,9 +102,10 @@ namespace ececlusters_web
                 "<table border='1'>" + Environment.NewLine +
                 sb.ToString() +
                 "</table>" + Environment.NewLine +
-                $"<p>Total indices: {clusters.Sum(c => c.indices.Count)}</p>" + Environment.NewLine +
-                $"<p>Total documents: {clusters.Sum(c => c.compactindices.Sum(i => i.documentcount))}</p>" + Environment.NewLine +
-                $"<p>Total storesize: {storesize}{storesizeshort}</p>" + Environment.NewLine +
+                $"<p>Total clusters: {clusters.Length}<br/>" + Environment.NewLine +
+                $"Total indices: {clusters.Sum(c => c.indices.Count)}<br/>" + Environment.NewLine +
+                $"Total documents: {clusters.Sum(c => c.compactindices.Sum(i => i.documentcount))}<br/>" + Environment.NewLine +
+                $"Total storesize: {storesize}{storesizeshort}</p>" + Environment.NewLine +
                 "</html></body>" + Environment.NewLine;
 
             return content;

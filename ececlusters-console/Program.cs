@@ -43,6 +43,7 @@ namespace ececlusters
             long storesize = clusters.Sum(c => c.compactindices.Sum(i => i.storesize));
             string storesizeshort = GetPrettySize(storesize);
 
+            Log($"Total clusters: {clusters.Length}");
             Log($"Total indices: {clusters.Sum(c => c.indices.Count)}");
             Log($"Total documents: {clusters.Sum(c => c.compactindices.Sum(i => i.documentcount))}");
             Log($"Total storesize: {storesize}{storesizeshort}");
