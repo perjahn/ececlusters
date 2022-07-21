@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,20 +13,20 @@ namespace ececlusters
 {
     public class Index
     {
-        public string name { get; set; }
+        public string name { get; set; } = string.Empty;
         public long documentcount { get; set; }
-        public List<Index> realindices { get; set; }
+        public List<Index> realindices { get; set; } = new List<Index>();
         public long storesize { get; set; }
     }
 
     public class Cluster
     {
-        public string name { get; set; }
-        public string url { get; set; }
-        public string kibanaurl { get; set; }
+        public string name { get; set; } = string.Empty;
+        public string url { get; set; } = string.Empty;
+        public string? kibanaurl { get; set; } = null;
         public List<Index> indices { get; set; } = new List<Index>();
         public List<Index> compactindices { get; set; } = new List<Index>();
-        public string errormessage { get; set; }
+        public string errormessage { get; set; } = string.Empty;
     }
 
     public class ClusterInfo
@@ -47,13 +48,12 @@ namespace ececlusters
 
             string result;
 
-            using (HttpClient client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(creds));
+            using var client = new HttpClient();
 
-                result = await client.GetStringAsync(url);
-            }
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(creds));
+
+            result = await client.GetStringAsync(url);
 
             File.WriteAllText("eceresult.json", result);
 
@@ -71,13 +71,13 @@ namespace ececlusters
             foreach (dynamic ececluster in ececlusters)
             {
                 string clusterid = ececluster.cluster_id;
-                string kibanaid = GetKibanaID(ececluster);
+                string? kibanaid = GetKibanaID(ececluster);
                 string clustername = ececluster.cluster_name;
 
                 var clustercredentials = allclustercredentials.Where(c => ((dynamic)c).name == ececluster.cluster_name).ToArray();
 
-                string clusterusername = null;
-                string clusterpassword = null;
+                string? clusterusername = null;
+                string? clusterpassword = null;
                 if (clustercredentials.Length > 0)
                 {
                     clusterusername = ((dynamic)clustercredentials[0]).username;
@@ -90,7 +90,7 @@ namespace ececlusters
             return await Task.WhenAll(tasks);
         }
 
-        private static string GetKibanaID(dynamic ececluster)
+        private static string? GetKibanaID(dynamic ececluster)
         {
             if (ececluster.associated_kibana_clusters != null && ececluster.associated_kibana_clusters.Count > 0 && ececluster.associated_kibana_clusters[0].kibana_id != null)
             {
@@ -139,7 +139,7 @@ namespace ececlusters
             }
         }
 
-        private static async Task<Cluster> GetClusterAsync(string clusterid, string kibanaid, string domain, string clustername, string username, string password)
+        private static async Task<Cluster> GetClusterAsync(string clusterid, string? kibanaid, string domain, string clustername, string? username, string? password)
         {
             var cluster = new Cluster()
             {
@@ -158,7 +158,7 @@ namespace ececlusters
             using (HttpClient client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(creds));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(creds));
 
                 string url = $"https://{clusterid}{domain}/_cat/indices";
                 string result;
@@ -213,7 +213,9 @@ namespace ececlusters
         private static long GetBytes(string jsonvalue)
         {
             if (jsonvalue == null)
+            {
                 return 0;
+            }
 
             long factor;
             string parsevalue;
@@ -259,9 +261,7 @@ namespace ececlusters
         private static void Log(string message)
         {
             string now = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
-
             Console.WriteLine($"{now}: {message}");
         }
-
     }
 }
